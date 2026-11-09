@@ -6,7 +6,9 @@
     "test": "node experiments/scalajs-ui-tests.mjs",
     "test:scenarios": "node experiments/scenario-api-tests.mjs",
     "test:workbench": "node experiments/workbench-api-tests.mjs",
-    "test:workbench-ui": "node experiments/workbench-ui-tests.mjs"
+    "test:workbench-ui": "node experiments/workbench-ui-tests.mjs",
+    "test:offline": "node experiments/run-tests.mjs --offline",
+    "test:all": "node experiments/run-tests.mjs"
   },
   "devDependencies": {
     "jsdom": "26.1.0"
