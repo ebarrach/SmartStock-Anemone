@@ -1,0 +1,77 @@
+============================================================
+SMARTSTOCK — SCHÉMA TEMPÉRATURE / VENTILATION
+============================================================
+
+                    TEMPÉRATURE SIMULÉE : 27.0 °C
+                                 |
+                  slider / champ numérique / APPLIQUER
+                                 |
+                                 v
+                      BRIDGE : encodage au dixième
+                         27.0 °C -> atome t270
+                                 |
+                                 v
+                         temperature(t270)
+                       ajouté au vrai Blackboard
+                                 |
+                                 v
+                              ANEMONE
+                    sum q in Temperatures: ...
+                    get(temperature(q)) sélectionne t270
+                                 |
+                                 v
+                   temperature_current(t270) publié
+                                 |
+                                 v
+                 tell(ventilation(fan(t270))) dans l'AST
+                                 |
+                  équation Anemone fan(t270)=75
+                                 |
+                                 v
+                         ventilation(75)
+                    publié par le moteur Anemone
+                                 |
+                                 v
+                  BRIDGE : lecture du terme ventilation
+                      JSON fanPower = 75 / HTTP + SSE
+                                 |
+                                 v
+                  FRONTEND : affichage 75 % et animation
+                         de deux ventilateurs
+
+============================================================
+BLACKBOARD ET JOURNAL
+============================================================
+
+Avant : temperature(t270) [1].
+Pas 1 : développement du choix ; la mesure est encore présente.
+Pas 2 : mesure consommée ; store momentanément vide.
+Pas 3 : temperature_current(t270) [1].
+Pas 4 : temperature_current(t270) [1], ventilation(75) [1].
+
+Le journal garde les observations passées ; le Blackboard actuel
+ne conserve pas artificiellement temperature(t270) après son get.
+
+============================================================
+SEUILS DE DÉMONSTRATION — PAS DE RECOMMANDATION MÉDICALE
+============================================================
+
+    15.0 à < 22.0 °C ->   0 %
+    22.0 à < 24.0 °C ->  25 %
+    24.0 à < 26.0 °C ->  50 %
+    26.0 à < 28.0 °C ->  75 %
+    28.0 à   35.0 °C -> 100 %
+
+Exemples configurés : 20 -> 0 ; 23 -> 25 ; 25 -> 50 ;
+                      27 -> 75 ; 30 -> 100 ; retour 24 -> 50.
+
+La plage autorisée est 15.0–35.0 °C, au dixième de degré.
+Source de configuration : config/temperature-policy.json.
+Les équations générées sont chargées dans Anemone au démarrage.
+Le générateur prépare une table, il n'est pas le moteur runtime.
+La vitesse graphique dépend de la puissance reçue, pas d'une
+comparaison de température dans le frontend réel.
+
+Le MODE DEMO simule séparément ces résultats dans le navigateur.
+Voir smartstock-procedure-temperature.txt pour reconstruire
+manuellement le même modèle Anemone.

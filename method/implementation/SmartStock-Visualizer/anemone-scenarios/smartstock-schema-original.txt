@@ -1,0 +1,12 @@
+Deborah retire une boîte de compresses
+                   │
+          ┌──────┴──────┐
+         ▼                  ▼
+     poids change    NFC détecté
+          │                 │
+          └──────┬──────┘
+                   ▼
+            retrait confirmé
+                   │
+                   ▼
+             Stock : 40 → 39

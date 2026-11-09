@@ -1,0 +1,58 @@
+SMARTSTOCK VISUALIZER
+INDEX DE LA DOCUMENTATION
+============================================================
+
+Tous les chemins ci-dessous sont relatifs à la racine du projet.
+Les guides TXT sont des documents pour humains, pas des programmes
+à soumettre intégralement au parseur Anemone.
+
+POUR COMPRENDRE L'ENSEMBLE ET REPRENDRE LE DÉVELOPPEMENT
+    notes/ARCHITECTURE-SMARTSTOCK.txt
+    Architecture, arborescence réelle, classes, routes, diagnostic,
+    démarrage, modifications pratiques et glossaire.
+
+POUR COMPRENDRE LA GESTION DU STOCK ACTUELLE
+    anemone-scenarios/smartstock-procedure-datamatrix.txt
+    Tutoriel détaillé : définitions, agent, tests et intégration Java.
+
+POUR VOIR RAPIDEMENT LE SCÉNARIO STOCK
+    anemone-scenarios/smartstock-schema-datamatrix.txt
+    Schéma du poids, du scan Data Matrix et de la mise à jour du stock.
+
+POUR COMPRENDRE LA TEMPÉRATURE
+    anemone-scenarios/smartstock-procedure-temperature.txt
+    Tutoriel autonome, définitions complètes, quatre pas d'exécution,
+    exemples de températures et distinction réel/simulation.
+
+POUR VOIR RAPIDEMENT LE SCÉNARIO TEMPÉRATURE
+    anemone-scenarios/smartstock-schema-temperature.txt
+    Température simulée -> termes -> équations Anemone -> ventilation.
+
+DOCUMENTS HISTORIQUES — ARCHIVES À NE PAS MODIFIER
+    anemone-scenarios/smartstock-procedure-original.txt
+    anemone-scenarios/smartstock-schema-original.txt
+
+Ces deux originaux utilisent NFC. Ils sont conservés volontairement
+pour garder la trace de l'ancien scénario. La version actuelle
+utilise un événement Data Matrix ; les archives ne sont pas la
+source chargée par le Bridge actuel.
+
+POUR LANCER ET TESTER RAPIDEMENT
+    README.md
+    notes/version-1-validation.md
+    notes/version-2-validation.md
+
+ORDRE CONSEILLÉ POUR UNE REPRISE COMPLÈTE
+1. Cet index.
+2. ARCHITECTURE-SMARTSTOCK.txt.
+3. smartstock-schema-datamatrix.txt.
+4. smartstock-procedure-datamatrix.txt.
+5. smartstock-schema-temperature.txt.
+6. smartstock-procedure-temperature.txt.
+7. README.md pour les commandes, puis les sources citées dans le guide.
+
+PREUVE RUNTIME DANS L'APPLICATION
+Sidebar > SYSTÈME > Diagnostic moteur.
+Endpoint local : GET /api/diagnostics.
+Le diagnostic lit le vrai processus Java, même si une démo était
+en mode Demo. Il ne fabrique pas un moteur en l'absence du Bridge.

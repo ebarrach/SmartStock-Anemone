@@ -1,0 +1,60 @@
+============================================================
+SMARTSTOCK — SCHÉMA STOCK / DATA MATRIX
+============================================================
+
+             Deborah retire une boîte de compresses
+                              |
+                  +-----------+-----------+
+                  |                       |
+                  v                       v
+      poids_change(compresse)   datamatrix_detecte(compresse)
+                  |                       |
+                  +-----------+-----------+
+                              |
+                              v
+                AGENT RÉEL EXÉCUTÉ PAR ANEMONE
+                  get(poids_change(compresse))
+                  get(datamatrix_detecte(compresse))
+                              |
+                              v
+                   retrait_confirme(compresse)
+                              |
+                              v
+                       sum q in Stock
+                              |
+                              v
+                    stock(compresse,40)
+                   consommé par get avec q=40
+                              |
+                              v
+                           pred(40)
+                  équation Anemone : pred(40)=39
+                              |
+                              v
+                    stock(compresse,39)
+                       publié par tell
+
+============================================================
+COMMENT LIRE LE SCHÉMA
+============================================================
+
+Les deux branches représentent des événements indépendants.
+Un seul événement ne suffit pas à publier la confirmation.
+Le chemin de l'agent reste séquentiel : le poids peut être consommé
+avant l'arrivée du Data Matrix. En cas de blocage, garder l'AST.
+
+AVANT : stock(compresse,40), poids_change(compresse),
+        datamatrix_detecte(compresse), chacun avec multiplicité 1.
+APRÈS : retrait_confirme(compresse) [1], stock(compresse,39) [1].
+
+Un second retrait sur le même Blackboard peut produire :
+        retrait_confirme(compresse) [2], stock(compresse,38) [1].
+
+Les trois rôles :
+    Frontend : visualisation, boutons, animations.
+    Bridge Java : transport, orchestration, lecture des résultats.
+    Anemone : exécution de l'agent et transformation du store.
+
+Le motif Data Matrix affiché est illustratif. Les événements sont
+déclenchés par les boutons, pas par un scanner physique intégré.
+Se référer à smartstock-procedure-datamatrix.txt pour le tutoriel.

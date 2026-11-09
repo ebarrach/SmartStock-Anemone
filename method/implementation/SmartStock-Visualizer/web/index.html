@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SmartStock : visualisation du véritable moteur Anemone et démonstration pédagogique indépendante.">
+  <title>SMARTSTOCK — Gestion intelligente des stocks</title>
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/version2.css">
+  <link rel="stylesheet" href="css/diagnostics.css">
+  <script defer src="js/data-sources/anemone.js"></script>
+  <script defer src="js/data-sources/demo.js"></script>
+  <script defer src="js/temperature-settings.js"></script>
+  <script defer src="js/data-sources/temperature-demo.js"></script>
+  <script defer src="js/app.js"></script>
+  <script defer src="js/fans.js"></script>
+  <script defer src="js/temperature.js"></script>
+  <script defer src="js/diagnostics.js"></script>
+  <script defer src="js/shell.js"></script>
+</head>
+<body>
+  <aside class="sidebar" aria-label="Navigation SmartStock">
+    <div class="sidebar-brand"><span class="sidebar-symbol">S+</span><div><strong>SMARTSTOCK</strong><small>Système intelligent</small></div></div>
+    <span class="sidebar-category">DÉMONSTRATIONS</span>
+    <nav id="demo-navigation" aria-label="Démonstrations"></nav>
+    <span class="sidebar-category diagnostic-category">SYSTÈME</span>
+    <nav id="system-navigation" aria-label="Diagnostic"></nav>
+    <div class="sidebar-bottom"><span class="sidebar-version">LABORATOIRE CONNECTÉ · V2</span><button id="quit-app" class="quit-button" aria-label="Quitter l’application SmartStock" title="Quitter l’application"><span aria-hidden="true">⏻</span><span>QUITTER L’APPLICATION</span></button></div>
+  </aside>
+  <div class="shell">
+    <header class="topbar"><div class="breadcrumb">LABORATOIRE CONNECTÉ <span>/</span> ARMOIRE MÉDICALE</div><span class="project-tag"><i></i> PROJET UNIVERSITAIRE</span></header>
+    <main>
+      <section class="page-heading">
+        <div><div class="eyebrow" id="demo-eyebrow">DÉMO 01 · GESTION INTELLIGENTE DU STOCK</div><h1>SMARTSTOCK<span>®</span></h1><p id="demo-subtitle">Système intelligent de gestion des stocks</p></div>
+        <div class="mode-control"><label for="mode">SOURCE DES DONNÉES</label><select id="mode"><option value="anemone">Anemone — moteur réel</option><option value="demo">Demo — données simulées</option></select></div>
+      </section>
+      <div id="mode-banner" class="mode-banner"><span class="status-dot"></span><strong id="mode-label">ANEMONE — MOTEUR RÉEL</strong><span id="connection">Connexion au Bridge…</span><span class="live-label" id="live-label">SOURCE JVM</span></div>
+      <p id="error" class="error" role="alert" hidden></p>
+      <section id="stock-view" class="demo-view" aria-label="Gestion intelligente du stock">
+      <div class="workspace">
+        <section class="cabinet-panel panel" aria-label="Visualisation de l’armoire">
+          <div class="panel-heading"><div><span class="eyebrow">UNITÉ DE STOCKAGE / 01</span><h2>L’armoire intelligente</h2></div><span class="small-chip">COMPRESSES</span></div>
+          <div class="cabinet-scene" id="scene">
+            <div class="scene-grid"></div>
+            <div class="stock-callout"><span>STOCK ACTUEL</span><strong id="stock">—</strong><span>boîtes de compresses</span><div id="stock-transition" aria-live="polite">Lecture du Blackboard</div></div>
+            <div class="cabinet">
+              <div class="cabinet-top"><span class="cabinet-logo">S<span>+</span></span><span>SMARTSTOCK<span class="cabinet-sub">MEDICAL STORAGE SYSTEM</span></span><i></i></div>
+              <div class="cabinet-glass">
+                <div class="glass-reflection"></div>
+                <div class="shelf shelf-one"><div class="box"><b>+</b><span>COMPRESSES<small>STÉRILES · 10 × 10 CM</small></span><img src="assets/datamatrix.svg" alt="Motif Data Matrix illustratif"></div><div class="box"><b>+</b><span>COMPRESSES<small>STÉRILES · 10 × 10 CM</small></span><img src="assets/datamatrix.svg" alt=""></div></div>
+                <div class="shelf shelf-two"><div class="box"><b>+</b><span>COMPRESSES<small>STÉRILES · 10 × 10 CM</small></span><img src="assets/datamatrix.svg" alt=""></div><div class="box"><b>+</b><span>COMPRESSES<small>STÉRILES · 10 × 10 CM</small></span><img src="assets/datamatrix.svg" alt=""></div></div>
+                <div class="shelf shelf-three"><div class="box focus-box" id="moving-box"><b>+</b><span>COMPRESSES<small>STÉRILES · 10 × 10 CM</small></span><img src="assets/datamatrix.svg" alt="Motif Data Matrix illustratif, non destiné au décodage"><div class="scan-line"></div></div><div class="box"><b>+</b><span>COMPRESSES<small>STÉRILES · 10 × 10 CM</small></span><img src="assets/datamatrix.svg" alt=""></div></div>
+                <div class="cabinet-handle"></div>
+              </div>
+              <div class="cabinet-base"><span><i></i> CAPTEURS CONNECTÉS</span><span>SS—001</span></div>
+            </div>
+            <div class="scene-caption"><span class="person-icon">D</span><div><strong id="narrative">Prête pour un nouveau retrait</strong><span>Les boîtes illustrent le stock ; le compteur indique sa valeur exacte.</span></div></div>
+          </div>
+          <div class="cabinet-footer"><span><i class="tiny-square"></i> POIDS + IDENTIFICATION</span><span>UNE DÉCISION, DEUX OBSERVATIONS</span></div>
+        </section>
+        <section class="flow-panel" aria-label="Suivi du retrait">
+          <div class="flow-title"><span class="eyebrow">CHAÎNE DE VALIDATION</span><span id="execution-status" class="small-chip">PRÊT</span></div>
+          <article class="sensor panel" id="weight-card"><span class="sensor-icon">↧</span><div><span class="step-label">01 / MESURER</span><h3>CAPTEUR DE POIDS</h3><p id="weight-label">En attente…</p></div><span class="sensor-check">✓</span></article>
+          <div class="flow-connector"><span></span><i>+</i><span></span></div>
+          <article class="sensor panel" id="matrix-card"><span class="sensor-icon matrix-icon">▦</span><div><span class="step-label">02 / IDENTIFIER</span><h3>LECTEUR DATA MATRIX</h3><p id="matrix-label">En attente…</p></div><span class="sensor-check">✓</span></article>
+          <div class="flow-arrow">↓</div>
+          <article class="confirmation" id="confirmation"><div class="confirm-symbol">✓</div><div><span class="step-label">03 / CONFIRMER</span><h3 id="confirmation-label">En attente de validation</h3><p id="confirmation-detail">L’agent Anemone prend la décision.</p></div></article>
+          <p class="observation-note">Ces indicateurs conservent les observations du retrait. Le Blackboard ci-dessous montre uniquement les termes encore présents.</p>
+        </section>
+      </div>
+      <section class="controls panel" aria-label="Commandes de démonstration"><div class="controls-label"><span class="eyebrow">POSTE DE COMMANDE</span><span id="step-label">Pas moteur : 0</span></div><div class="buttons"><button data-command="initialize">Initialiser</button><button data-command="weight"><span>↧</span> Capteur poids</button><button data-command="datamatrix"><span>▦</span> Data Matrix</button><button data-command="run" class="primary">▶ Run</button><button data-command="step">Pas à pas →</button><button id="auto" class="auto">✦ Démo automatique</button><button data-command="reset" class="reset">↺ Reset</button></div></section>
+      <div class="inspection-grid">
+        <section class="panel blackboard-panel"><div class="panel-heading"><div><span class="eyebrow">ÉTAT ACTUEL · SOURCE DE VÉRITÉ</span><h2 id="blackboard-title">Blackboard Anemone</h2></div><span id="term-count" class="small-chip">0 TERMES</span></div><div class="terminal"><div class="terminal-bar"><span></span><span></span><span></span><small id="store-source">ABBlackboard.storeContents</small></div><div id="blackboard" aria-live="polite"><p class="empty-store">En attente du moteur…</p></div></div><details><summary>Voir l’agent restant</summary><pre id="remaining-agent">—</pre></details></section>
+        <section class="panel journal-panel"><div class="panel-heading"><div><span class="eyebrow">HISTORIQUE · OBSERVATIONS</span><h2>Journal du retrait</h2></div><span class="journal-dot"></span></div><ol id="journal" aria-live="polite"></ol></section>
+      </div>
+      </section>
+      <section id="temperature-view" class="demo-view" aria-label="Régulation intelligente de température" hidden>
+        <div class="workspace temperature-workspace">
+          <section class="panel temperature-chamber"><div class="panel-heading"><div><span class="eyebrow">ESPACE À TEMPÉRATURE CONTRÔLÉE</span><h2>L’armoire thermorégulée</h2></div><span class="small-chip">MESURE SIMULÉE</span></div>
+            <div class="thermal-scene"><div class="scene-grid"></div>
+              <div class="thermal-reading"><span class="eyebrow">TEMPÉRATURE APPLIQUÉE</span><strong><span id="temp-reading">—</span><small>°C</small></strong><span>Entrée du moteur · pas une mesure physique</span></div>
+              <div class="thermal-cabinet"><div class="thermal-top">SMARTSTOCK <span>THERMAL UNIT / 02</span></div><div class="fan-pair"><div class="fan" aria-label="Ventilateur 1"><div class="fan-rotor"><i></i><i></i><i></i><i></i></div><span></span></div><div class="fan" aria-label="Ventilateur 2"><div class="fan-rotor"><i></i><i></i><i></i><i></i></div><span></span></div></div><div class="airflow"><i>↓</i><i>↓</i><i>↓</i></div><div class="thermal-products"><div>+<small>PRODUITS MÉDICAUX</small></div><div>+<small>PRODUITS MÉDICAUX</small></div><div>+<small>PRODUITS MÉDICAUX</small></div></div><div class="thermal-grille"></div><div class="thermal-bottom">VENTILATION PILOTÉE PAR LE MOTEUR</div></div>
+            </div>
+            <div class="temperature-input"><label for="temp-slider">TEMPÉRATURE SIMULÉE À TRANSMETTRE <output id="temp-draft">23.0 °C</output></label><div class="temperature-input-row"><input id="temp-slider" type="range" min="15" max="35" step="0.1" value="23"><input id="temp-number" type="number" min="15" max="35" step="0.1" value="23" aria-label="Température simulée en degrés Celsius"><span>°C</span></div><span id="temp-range-label">15.0 °C — 35.0 °C · pas de 0.1 °C</span></div>
+          </section>
+          <div class="temperature-aside"><section class="panel ventilation-panel"><span class="eyebrow">DÉCISION REÇUE DU MOTEUR</span><h2>VENTILATION</h2><div class="fan-power"><strong id="fan-power">—</strong><span>%</span></div><div class="power-track"><span id="fan-bar"></span></div><div class="regulation-state"><span id="temp-status" class="small-chip">PRÊT</span><strong id="fan-state">En attente de décision</strong></div><p>La vitesse des deux ventilateurs représente la puissance reçue. Aucune règle de ventilation n’est calculée par l’interface en mode Anemone.</p></section>
+          <section class="panel thresholds"><span class="eyebrow">SEUILS DE DÉMONSTRATION</span><h2>Paramètres pédagogiques</h2><ul id="threshold-list"></ul><p>Ces seuils ne sont pas des recommandations médicales ou pharmaceutiques.</p></section></div>
+        </div>
+        <section class="panel teaching-path" aria-label="Chemin de la décision"><span class="eyebrow">COMPRENDRE LA RÉGULATION</span><div><span>TEMPÉRATURE <b id="path-temperature">—</b></span><i>→</i><span id="path-engine">ANEMONE <b>Agent + équations</b></span><i>→</i><span>DÉCISION <b id="path-decision">En attente</b></span><i>→</i><span>VENTILATION <b id="path-power">—</b></span></div></section>
+        <section class="controls panel" aria-label="Commandes température"><div class="controls-label"><span class="eyebrow">POSTE DE COMMANDE</span><span id="temp-step">Pas moteur : 0</span></div><div class="buttons"><button data-temp-command="initialize">Initialiser</button><button data-temp-command="apply">Appliquer température</button><button data-temp-command="run" class="primary">▶ Run</button><button data-temp-command="step">Pas à pas →</button><button id="temp-auto" class="auto">✦ Démo automatique</button><button data-temp-command="reset" class="reset">↺ Reset</button></div></section>
+        <div class="inspection-grid"><section class="panel"><div class="panel-heading"><div><span class="eyebrow">ÉTAT ACTUEL · SOURCE DE VÉRITÉ</span><h2 id="temp-board-title">Blackboard Anemone</h2></div><span id="temp-term-count" class="small-chip">0 TERMES</span></div><div class="terminal"><div class="terminal-bar"><span></span><span></span><span></span><small id="temp-store-source">ABBlackboard.storeContents</small></div><div id="temp-blackboard"></div></div><details><summary>Voir l’agent restant</summary><pre id="temp-agent">—</pre></details></section><section class="panel"><div class="panel-heading"><div><span class="eyebrow">HISTORIQUE · OBSERVATIONS</span><h2>Journal de régulation</h2></div><span class="journal-dot"></span></div><ol id="temp-journal" class="observation-journal" aria-live="polite"></ol></section></div>
+      </section>
+      <section id="diagnostics-view" class="demo-view" aria-label="Diagnostic moteur réel" hidden>
+        <section class="panel diagnostic-intro"><div><span class="eyebrow">OBSERVATIONS DU PROCESSUS JAVA · AUCUNE SIMULATION</span><h2>Diagnostic moteur</h2><p>Cette page lit le Bridge, même si une démonstration était en mode Demo. Elle ne déclenche aucune exécution Anemone.</p></div><button id="diagnostics-refresh">Actualiser</button></section>
+        <p id="diagnostics-status" class="mode-banner" role="status">Vérification du Bridge…</p><p id="diagnostics-error" class="error" role="alert" hidden></p>
+        <div id="diagnostics-content" hidden>
+          <section class="panel diagnostic-section"><span class="eyebrow">ÉTAT RUNTIME RÉEL · JVM ET CLASSES CHARGÉES</span><dl id="diagnostics-runtime" class="diagnostic-values"></dl><div id="diagnostics-classes"></div></section>
+          <section class="panel diagnostic-section"><span class="eyebrow">CONFIGURATION · DISTINCTE DE L’ORIGINE RÉELLE DES CLASSES</span><dl id="diagnostics-config" class="diagnostic-values"></dl></section>
+          <div id="diagnostics-sessions" class="inspection-grid"></div>
+          <p id="diagnostics-scope" class="observation-note"></p><p class="observation-note">La preuve combine l’origine des classes, les instances réelles, les AST avant/après et les changements du store. Un nom de classe seul ne prouve pas une exécution. Les compteurs mesurent les appels du Bridge depuis ce démarrage JVM, pas les récursions internes du moteur ni le nombre de décisions métier.</p>
+        </div>
+      </section>
+      <footer><span>SMARTSTOCK <b>/</b> Du capteur à la décision.</span><span id="session-label">Session —</span><span>ANEMONE · COORDINATION PAR BLACKBOARD</span></footer>
+    </main>
+  </div>
+  <dialog id="quit-dialog" aria-labelledby="quit-question"><div class="quit-dialog-icon">⏻</div><h2 id="quit-question">Voulez-vous vraiment quitter SmartStock ?</h2><p>Les démonstrations seront arrêtées. Votre ordinateur restera allumé.</p><div><button id="quit-cancel" autofocus>ANNULER</button><button id="quit-confirm" class="primary">QUITTER</button></div><p id="quit-error" role="alert" hidden></p></dialog>
+  <section id="stopped-page" hidden><div class="sidebar-symbol">S+</div><h1>SMARTSTOCK EST ARRÊTÉ</h1><p id="stopped-detail">Vous pouvez fermer cette fenêtre.</p></section>
+</body>
+</html>

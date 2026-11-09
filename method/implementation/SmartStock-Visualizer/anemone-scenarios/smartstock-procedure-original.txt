@@ -1,0 +1,420 @@
+============================================================
+SMARTSTOCK — DÉMONSTRATION ANEMONE
+Scénario : Deborah retire une boîte de compresses
+============================================================
+
+OBJECTIF
+--------
+Stock initial : 40 boîtes de compresses.
+
+Un retrait n'est validé que si :
+1. le capteur de poids détecte un changement ;
+2. le lecteur NFC détecte la boîte.
+
+Si les deux événements sont présents :
+    → retrait confirmé
+    → stock décrémenté automatiquement
+
+Résultat attendu :
+    stock(compresse,40)
+              ↓
+    stock(compresse,39)
+
+
+============================================================
+ÉTAPE 1 — DÉMARRER ANEMONE
+============================================================
+
+Ouvrir Anemone.
+
+On arrive sur :
+    The interactive blackboard
+
+Le "Current store" doit être vide.
+
+
+============================================================
+ÉTAPE 2 — CRÉER L'ENSEMBLE DES QUANTITÉS
+============================================================
+
+Cliquer sur :
+
+    New Definition(s)
+
+Dans la grande zone, copier :
+
+eset Stock = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40}.
+
+Cliquer :
+
+    Submit
+
+Vérifier en bas qu'Anemone affiche quelque chose du type :
+
+    set(s) introduced
+    Stock = {0,1,2,...,40}
+
+
+============================================================
+ÉTAPE 3 — DÉFINIR pred()
+============================================================
+
+Toujours dans New Definition(s).
+
+Effacer le texte de la zone du haut.
+
+Copier :
+
+eqn pred(1)=0.
+pred(2)=1.
+pred(3)=2.
+pred(4)=3.
+pred(5)=4.
+pred(6)=5.
+pred(7)=6.
+pred(8)=7.
+pred(9)=8.
+pred(10)=9.
+pred(11)=10.
+pred(12)=11.
+pred(13)=12.
+pred(14)=13.
+pred(15)=14.
+pred(16)=15.
+pred(17)=16.
+pred(18)=17.
+pred(19)=18.
+pred(20)=19.
+pred(21)=20.
+pred(22)=21.
+pred(23)=22.
+pred(24)=23.
+pred(25)=24.
+pred(26)=25.
+pred(27)=26.
+pred(28)=27.
+pred(29)=28.
+pred(30)=29.
+pred(31)=30.
+pred(32)=31.
+pred(33)=32.
+pred(34)=33.
+pred(35)=34.
+pred(36)=35.
+pred(37)=36.
+pred(38)=37.
+pred(39)=38.
+pred(40)=39.
+
+Cliquer :
+
+    Submit
+
+Vérifier qu'Anemone affiche les équations.
+
+Exemple :
+
+    pred(38) = 37
+    pred(39) = 38
+    pred(40) = 39
+
+EXPLICATION POUR LE PROF :
+"pred représente le prédécesseur d'une quantité.
+Par exemple pred(40)=39.
+Cela permet de modéliser la diminution du stock."
+
+
+============================================================
+ÉTAPE 4 — FERMER LA FENÊTRE DES DÉFINITIONS
+============================================================
+
+Fermer uniquement la fenêtre rose.
+
+Revenir à :
+
+    The interactive blackboard
+
+
+============================================================
+ÉTAPE 5 — INITIALISER LE STOCK
+============================================================
+
+Dans :
+
+    si-term
+
+écrire :
+
+stock(compresse,40)
+
+Multiplicity :
+
+1
+
+Cliquer :
+
+    Tell
+
+Le Current store doit afficher :
+
+    stock(compresse,40) [1]
+
+
+EXPLICATION POUR LE PROF :
+"J'initialise ici l'état du système.
+SmartStock contient actuellement 40 boîtes de compresses."
+
+
+============================================================
+ÉTAPE 6 — SIMULER LE CAPTEUR DE POIDS
+============================================================
+
+Dans si-term écrire :
+
+poids_change(compresse)
+
+Cliquer :
+
+    Tell
+
+
+============================================================
+ÉTAPE 7 — SIMULER LE LECTEUR NFC
+============================================================
+
+Dans si-term écrire :
+
+nfc_detecte(compresse)
+
+Cliquer :
+
+    Tell
+
+
+Le Current store doit maintenant contenir :
+
+    stock(compresse,40) [1]
+
+    poids_change(compresse) [1]
+
+    nfc_detecte(compresse) [1]
+
+
+EXPLICATION POUR LE PROF :
+"Deborah vient de retirer une boîte.
+
+Le changement de poids a été détecté.
+
+Le lecteur NFC a également identifié le passage
+de la boîte.
+
+Les deux informations sont maintenant présentes
+sur le blackboard."
+
+
+============================================================
+ÉTAPE 8 — CRÉER L'AGENT SMARTSTOCK
+============================================================
+
+Cliquer :
+
+    New Autonomous Agent
+
+Dans la grande zone écrire EXACTEMENT :
+
+get(poids_change(compresse));get(nfc_detecte(compresse));tell(retrait_confirme(compresse));sum q in Stock: get(stock(compresse,q));tell(stock(compresse,pred(q)))
+
+Cliquer :
+
+    Submit
+
+
+ATTENTION :
+NE PAS CLIQUER SUR RUN TOUT DE SUITE SI ON VEUT
+MONTRER LE SYSTÈME AU PROFESSEUR AVANT L'EXÉCUTION.
+
+
+============================================================
+ÉTAT IDÉAL JUSTE AVANT LA DÉMONSTRATION
+============================================================
+
+BLACKBOARD :
+
+    stock(compresse,40)
+    poids_change(compresse)
+    nfc_detecte(compresse)
+
+AGENT :
+
+get(poids_change(compresse));
+get(nfc_detecte(compresse));
+tell(retrait_confirme(compresse));
+sum q in Stock:
+    get(stock(compresse,q));
+    tell(stock(compresse,pred(q)))
+
+
+============================================================
+ÉTAPE 9 — EXPLIQUER L'AGENT AVANT DE CLIQUER RUN
+============================================================
+
+1.
+
+get(poids_change(compresse))
+
+→ L'agent attend/consomme l'événement provenant
+  du capteur de poids.
+
+
+2.
+
+get(nfc_detecte(compresse))
+
+→ L'agent attend/consomme la détection NFC.
+
+
+3.
+
+tell(retrait_confirme(compresse))
+
+→ Puisque les deux capteurs concordent,
+  le retrait est confirmé.
+
+
+4.
+
+sum q in Stock:
+
+→ q représente la quantité actuelle.
+
+Stock contient les valeurs possibles de 0 à 40.
+
+
+5.
+
+get(stock(compresse,q))
+
+→ L'agent récupère la quantité actuellement
+  présente dans le blackboard.
+
+Dans notre démonstration :
+
+    q = 40
+
+
+6.
+
+tell(stock(compresse,pred(q)))
+
+→ On introduit le nouvel état du stock.
+
+Comme :
+
+    q = 40
+
+et :
+
+    pred(40)=39
+
+on obtient :
+
+    stock(compresse,39)
+
+
+============================================================
+ÉTAPE 10 — CLIQUER SUR RUN DEVANT LE PROFESSEUR
+============================================================
+
+Cliquer :
+
+    Run
+
+Puis revenir au Blackboard.
+
+
+AVANT :
+
+    poids_change(compresse)
+    nfc_detecte(compresse)
+    stock(compresse,40)
+
+
+APRÈS :
+
+    retrait_confirme(compresse)
+    stock(compresse,39)
+
+
+============================================================
+RÉSULTAT
+============================================================
+
+            Deborah
+               │
+               ▼
+       retire une compresse
+               │
+       ┌───────┴────────┐
+       ▼                ▼
+ changement poids    détection NFC
+       │                │
+       └───────┬────────┘
+               ▼
+       retrait confirmé
+               │
+               ▼
+       quantité actuelle
+            q = 40
+               │
+               ▼
+          pred(q)
+               │
+               ▼
+         pred(40)=39
+               │
+               ▼
+        STOCK = 39
+
+============================================================
+Pour Enchainer
+============================================================
+
+Dans si-term écrire :
+
+poids_change(compresse)
+
+Cliquer :
+
+    Tell
+
+Dans si-term écrire :
+
+nfc_detecte(compresse)
+
+Cliquer :
+
+    Tell
+
+Run Agent
+
+
+============================================================
+PHRASE DE CONCLUSION
+============================================================
+
+"Le blackboard permet ici aux différents composants
+du système de communiquer indirectement.
+
+Les capteurs publient leurs événements dans
+l'environnement partagé.
+
+L'agent SmartStock ne confirme le retrait que lorsque
+les informations du capteur de poids et du lecteur NFC
+sont disponibles.
+
+Il récupère ensuite dynamiquement la quantité q et
+utilise pred(q) pour mettre à jour le stock.
+
+La logique n'est donc pas limitée au passage de
+40 à 39 : le même principe permet de gérer
+39 vers 38, 38 vers 37, etc."
