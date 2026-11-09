@@ -20,7 +20,8 @@ public final class Main {
             hubs.put("stock", new EventHub()); hubs.put("temperature", new EventHub());
             sessions.put("stock", new AnemoneSession(root.resolve("anemone-scenarios/connected"), hubs.get("stock")));
             sessions.put("temperature", new TemperatureEngineSession(root, hubs.get("temperature")));
-            LocalServer server = new LocalServer(port, root.resolve("web"), sessions, hubs, stop::countDown, new EngineDiagnostics(root, sessions));
+            Path web = Paths.get(System.getProperty("smartstock.web", root.resolve("web").toString()));
+            LocalServer server = new LocalServer(port, web, sessions, hubs, stop::countDown, new EngineDiagnostics(root, sessions), new ScenarioWorkspace(root));
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 stop.countDown(); server.close(); sessions.values().forEach(EngineSession::close);
             }, "smartstock-shutdown"));

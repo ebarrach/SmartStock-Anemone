@@ -1,0 +1,14 @@
+{
+  "name": "smartstock-anemone-visualizer-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node experiments/scalajs-ui-tests.mjs",
+    "test:scenarios": "node experiments/scenario-api-tests.mjs",
+    "test:workbench": "node experiments/workbench-api-tests.mjs",
+    "test:workbench-ui": "node experiments/workbench-ui-tests.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

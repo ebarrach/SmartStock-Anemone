@@ -2,6 +2,8 @@ package smartstock.http;
 
 import com.sun.net.httpserver.*;
 import smartstock.anemone.EngineSession;
+import smartstock.anemone.ScenarioWorkspace;
+import smartstock.anemone.WorkbenchFacade;
 import smartstock.state.*;
 import java.io.*;
 import java.net.*;
@@ -19,13 +21,16 @@ public final class LocalServer implements AutoCloseable {
     private final Map<String, EventHub> hubs;
     private final Runnable requestShutdown;
     private final EngineDiagnostics diagnostics;
+    private final ScenarioWorkspace scenarios;
+    private final WorkbenchFacade workbench = new WorkbenchFacade();
     private final AtomicBoolean stopping = new AtomicBoolean();
     private final AtomicBoolean closed = new AtomicBoolean();
     private final String token = UUID.randomUUID().toString();
     private final Semaphore streams = new Semaphore(8);
-    public LocalServer(int port, Path web, Map<String, EngineSession> sessions, Map<String, EventHub> hubs, Runnable requestShutdown, EngineDiagnostics diagnostics) throws IOException {
+    public LocalServer(int port, Path web, Map<String, EngineSession> sessions, Map<String, EventHub> hubs, Runnable requestShutdown, EngineDiagnostics diagnostics, ScenarioWorkspace scenarios) throws IOException {
         this.web = web.toRealPath(); this.sessions = sessions; this.hubs = hubs; this.requestShutdown = requestShutdown;
         this.diagnostics = diagnostics;
+        this.scenarios = scenarios;
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 32);
         server.setExecutor(httpThreads); server.createContext("/", this::handle);
     }
@@ -42,6 +47,42 @@ public final class LocalServer implements AutoCloseable {
             x.getResponseHeaders().set("X-Content-Type-Options", "nosniff");
             x.getResponseHeaders().set("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'");
             String path = x.getRequestURI().getPath();
+            if (path.equals("/api/workbench/events") && x.getRequestMethod().equals("GET")) {
+                String query = x.getRequestURI().getRawQuery();
+                if (query == null || !query.matches("workspaceId=[a-f0-9-]{36}")) { send(x, 400, "workspaceId requis"); return; }
+                try { events(x, workbench.hub(query.substring("workspaceId=".length()))); }
+                catch (IllegalArgumentException e) { send(x, 404, e.getMessage()); }
+                return;
+            }
+            if (path.startsWith("/api/scenarios/") || path.startsWith("/api/workbench/")) {
+                if (x.getRequestURI().getRawQuery() != null) { send(x, 400, "Parametres refuses"); return; }
+                if (path.equals("/api/scenarios/templates") && x.getRequestMethod().equals("GET")) {
+                    json(x, 200, scenarios.templates()); return;
+                }
+                if (!x.getRequestMethod().equals("POST")) { send(x, 405, "POST requis"); return; }
+                if (!token.equals(x.getRequestHeaders().getFirst("X-SmartStock-Token"))) { send(x, 403, "Jeton requis"); return; }
+                ByteArrayOutputStream body = new ByteArrayOutputStream();
+                byte[] chunk = new byte[4096]; int n;
+                while ((n = x.getRequestBody().read(chunk)) != -1) {
+                    if (body.size() + n > 65536) { send(x, 413, "Scenario limite a 64 Kio"); return; }
+                    body.write(chunk, 0, n);
+                }
+                try {
+                    Map<String, String> fields = new LinkedHashMap<>();
+                    for (String pair : new String(body.toByteArray(), StandardCharsets.UTF_8).split("&")) {
+                        String[] parts = pair.split("=", 2);
+                        if (parts.length != 2) throw new IllegalArgumentException("Corps formulaire requis");
+                        String key = URLDecoder.decode(parts[0], "UTF-8");
+                        if (fields.put(key, URLDecoder.decode(parts[1], "UTF-8")) != null) throw new IllegalArgumentException("Champ duplique");
+                    }
+                    if (path.startsWith("/api/workbench/")) json(x, 200, workbench.command(path.substring("/api/workbench/".length()), fields));
+                    else json(x, 200, scenarios.command(path.substring("/api/scenarios/".length()), fields));
+                } catch (ScenarioWorkspace.ParserFailure e) { json(x, 400, e.details); }
+                catch (WorkbenchFacade.Failure e) { json(x, 400, e.details); }
+                catch (IllegalArgumentException e) { send(x, 400, e.getMessage()); }
+                catch (Exception e) { send(x, 409, e.toString()); }
+                return;
+            }
             if (path.equals("/api/diagnostics")) {
                 if (!x.getRequestMethod().equals("GET")) { send(x, 405, "GET requis"); return; }
                 if (x.getRequestURI().getRawQuery() != null) { send(x, 400, "Aucun argument autorisé"); return; }

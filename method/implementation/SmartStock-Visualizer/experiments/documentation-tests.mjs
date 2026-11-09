@@ -1,4 +1,4 @@
-import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';import assert from 'node:assert/strict';
 const read=p=>fs.readFileSync(p,'utf8').replace(/\r\n/g,'\n');
 const protectedFiles={
   'anemone-scenarios/smartstock-procedure-original.txt':'213E03C7EC85BBEB12C0101D545D72E66994F8F33E359D4C588E93F8BF5E4A87',
@@ -20,16 +20,13 @@ assert(temperature.includes(read('anemone-scenarios/temperature/regulation.anemo
 for(const [t,p] of [[200,0],[230,25],[250,50],[270,75],[300,100],[240,50]])assert(temperature.includes(`fan(t${t})=${p}`));
 console.log('PASS — six TXT présents, aucun ancien événement dans les documents Data Matrix, blocs exécutables exacts');
 export function projectTree(){
+  // Describe versionable sources, independent of .git, IDE files and generated builds.
+  const files=execFileSync('git',['-c','core.quotepath=false','ls-files','--cached','--others','--exclude-standard','--','.'],{encoding:'utf8'}).trim().split('\n').filter(Boolean);
+  const tree={};
+  for(const file of files){let branch=tree;for(const part of file.replaceAll('\\','/').split('/'))branch=branch[part]??={};}
   const lines=['SmartStock-Visualizer/'];
-  function walk(dir,indent){
-    for(const entry of fs.readdirSync(dir,{withFileTypes:true}).sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0)){
-      const file=path.join(dir,entry.name),relative=path.relative('.',file).replaceAll('\\','/');
-      const skip=entry.name==='.git'||relative==='bridge/build'||relative==='out';
-      lines.push(indent+'+-- '+entry.name+(entry.isDirectory()?'/':'')+(skip?' [contenu technique généré/métadonnées non détaillé]':''));
-      if(entry.isDirectory()&&!skip)walk(file,indent+'    ');
-    }
-  }
-  walk('.','    ');return lines.join('\n');
+  function walk(branch,indent){for(const name of Object.keys(branch).sort()){const dir=Object.keys(branch[name]).length>0;lines.push(indent+'+-- '+name+(dir?'/':''));if(dir)walk(branch[name],indent+'    ');}}
+  walk(tree,'    ');return lines.join('\n');
 }
 let arch=read('notes/ARCHITECTURE-SMARTSTOCK.txt');
 if(process.argv.includes('--refresh-tree')){

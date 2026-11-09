@@ -34,7 +34,9 @@ rejected=await fetch(base+'/api/reset',{method:'POST',headers:{Origin:'http://ev
 rejected=await fetch(base+'/bridge/bridge.properties');assert.equal(rejected.status,404);
 console.log('PASS — commandes protégées, fichiers hors web inaccessibles');
 await command('reset');
-for(const path of ['/','/css/app.css','/js/app.js','/assets/datamatrix.svg'])assert.equal((await fetch(base+path)).status,200);
+const home=await fetch(base+'/');assert.equal(home.status,200);
+const html=await home.text();const entrypoint=html.includes('js/scalajs/main.js')?'/js/scalajs/main.js':'/js/app.js';
+for(const path of ['/css/app.css',entrypoint,'/assets/datamatrix.svg'])assert.equal((await fetch(base+path)).status,200);
 console.log('PASS — frontend et ressources servis localement');
 await new Promise(r=>setTimeout(r,150));streamAbort.abort();await readStream;
 const events=frames.split('\n\n').filter(f=>f.includes('event: state')).map(f=>JSON.parse(f.split('\n').find(l=>l.startsWith('data: ')).slice(6)));
