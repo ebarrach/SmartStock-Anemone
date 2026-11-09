@@ -1,0 +1,14 @@
+/* SmartStock palette preserved; not a claimed replica of the original Anemone GUI. */
+.scenario-intro{padding:24px;margin-bottom:20px}.scenario-intro p{font-size:12px;line-height:1.8;color:#73876a}.scenario-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0}.scenario-tools select{padding:10px;border:1px solid #cbdac2;border-radius:5px;background:white;color:#1c5749}.scenario-editors{display:grid;grid-template-columns:1fr 1fr;gap:20px}.scenario-editors label{display:block;padding:18px;font-size:11px;letter-spacing:1px}.scenario-editors textarea{display:block;width:100%;min-height:300px;resize:vertical;padding:18px;border:0;border-top:1px solid #cbdac2;border-radius:0 0 8px 8px;background:#193d35;color:#d7e6d8;font:13px/1.7 Consolas,monospace;tab-size:2}.scenario-results{padding:22px;margin-top:20px}.scenario-results pre{font-size:12px;max-height:380px;background:#193d35;color:#d7e6d8;padding:18px;border-radius:6px}.scenario-results h3{margin:16px 0}.scenario-tools input{width:80px;padding:10px}.scenario-status{font-size:12px;line-height:1.8;white-space:pre-wrap}.scenario-warning{color:#997537;font-size:11px}.scenario-tools button:focus-visible,textarea:focus-visible{outline:2px solid #6b9d75;outline-offset:3px}@media(max-width:850px){.scenario-editors{grid-template-columns:1fr}}
+
+@keyframes scenario-spin{to{transform:rotate(360deg)}}
+#diagnostics-classes,#diagnostics-sessions{white-space:pre-wrap;overflow-wrap:anywhere;display:block;padding:22px;font:12px/1.7 Consolas,monospace}
+.sidebar nav>div{display:contents}
+
+/* Exact colors read in Anemone JLAMP24 sources; not a screenshot reproduction.
+   ab_descriptions_interact.scala: descriptions pink(255,204,255).
+   agent_inter_interact.scala: agent red(255,176,176).
+   ab_interact.scala: Current store blue(219,242,255). */
+.scenario-editors>.panel:first-child label{background:#ffccff;color:#111;border-radius:8px 8px 0 0}
+.scenario-editors>.panel:last-child label{background:#ffb0b0;color:#111;border-radius:8px 8px 0 0}
+.scenario-results{background:#dbf2ff}.scenario-results pre{background:white;color:#111;border:1px solid #b1c9d8}

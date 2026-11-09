@@ -5,6 +5,7 @@ if (-not $AnemoneJar) {
     $line = Get-Content (Join-Path $PSScriptRoot 'bridge.properties') | Where-Object { $_ -match '^anemone.jar=' }
     $AnemoneJar = $line.Substring('anemone.jar='.Length)
 }
+if ([string]::IsNullOrWhiteSpace($AnemoneJar)) { throw 'JAR Anemone non configure : definir ANEMONE_JAR avec le chemin absolu du vrai JAR JLAMP24.' }
 if (-not (Test-Path -LiteralPath $AnemoneJar -PathType Leaf)) { throw "JAR Anemone introuvable : $AnemoneJar" }
 $classes = Join-Path $PSScriptRoot 'build/classes'
 New-Item -ItemType Directory -Path $classes -Force | Out-Null

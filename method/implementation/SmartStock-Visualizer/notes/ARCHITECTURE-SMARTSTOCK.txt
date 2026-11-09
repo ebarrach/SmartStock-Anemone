@@ -6,6 +6,15 @@ Guide de reprise fondé sur les sources et les scénarios présents
 dans D:\Projects\Java\SmartStock-Visualizer.
 Version 2 avec diagnostic moteur. Inspection : 20 octobre 2026.
 
+Reprise du 9 novembre 2026 : ce guide conserve le frontend JS historique.
+Le frontend Scala.js/Laminar est dans code/anemone-visualizer/ depuis la
+racine SmartStock-Anemone ; voir son README et method/DEMARRAGE.md.
+Le bridge commun accepte smartstock.web pour servir cette autre interface
+avec ses propres classes compilees, sur un autre port. ScenarioWorkspace
+ajoute des parseurs/AST/Blackboards utilisateurs isoles aux deux demos.
+Le releve ci-dessous porte sur les sources versionnables, sans sorties
+locales de build ni metadonnees Git/IDE non versionnees.
+
 Ce document suffit à comprendre le projet sans la conversation
 de développement. Les commandes sont à lancer depuis sa racine.
 Les tutoriels de scénarios et l'index se trouvent en fin de guide.
@@ -103,27 +112,11 @@ et des documents. .git et les binaires générés ne sont pas détaillés.
 Les fichiers locaux IntelliJ peuvent évoluer ensuite.
 
 SmartStock-Visualizer/
-    +-- .git/ [contenu technique généré/métadonnées non détaillé]
     +-- .gitignore
-    +-- .idea/
-        +-- .gitignore
-        +-- codeStyles/
-            +-- codeStyleConfig.xml
-        +-- inspectionProfiles/
-            +-- Project_Default.xml
-        +-- libraries/
-            +-- Anemone.xml
-        +-- misc.xml
-        +-- modules.xml
-        +-- vcs.xml
-        +-- workspace.xml
-    +-- .junie/
-        +-- plans/
     +-- .run/
         +-- SmartStock.run.xml
     +-- Anemone.bat
     +-- README.md
-    +-- SmartStock-Visualizer.iml
     +-- anemone-scenarios/
         +-- .gitkeep
         +-- connected/
@@ -141,7 +134,6 @@ SmartStock-Visualizer/
             +-- regulation.anemone
     +-- bridge/
         +-- bridge.properties
-        +-- build/ [contenu technique généré/métadonnées non détaillé]
         +-- build.ps1
         +-- src/
             +-- main/
@@ -151,7 +143,9 @@ SmartStock-Visualizer/
                         +-- anemone/
                             +-- AnemoneSession.java
                             +-- EngineSession.java
+                            +-- ScenarioWorkspace.java
                             +-- TemperatureEngineSession.java
+                            +-- WorkbenchFacade.java
                         +-- http/
                             +-- LocalServer.java
                         +-- state/
